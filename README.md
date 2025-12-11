@@ -2,6 +2,21 @@
 
 A hands-on learning journey through Google's AI Agents capabilities.
 
+> **Official Course**: [Advent of Agents 2025](https://adventofagents.com/) - 25 days of Zero to Production-Ready AI Agents on Google Cloud
+
+## About This Course
+
+This is Google Cloud's **Advent of Agents 2025** program - a 25-day journey to master AI Agents using:
+- **Gemini 3** - Google's latest AI models
+- **Agent Development Kit (ADK)** - Comprehensive agent development platform
+- **Agent Engine** - Production deployment infrastructure
+
+### Course Highlights
+- 🎯 One feature per day, each taking less than 5 minutes to try
+- 📋 Copy-paste commands that work out of the box
+- 📚 Links to official documentation
+- 🆓 100% free
+
 ## Setup
 
 ### Prerequisites
@@ -55,5 +70,7 @@ uv run pytest
 
 ## Resources
 
+- [Advent of Agents 2025](https://adventofagents.com/) - Official course website
 - [Google AI Studio](https://aistudio.google.com/)
 - [Gemini API Documentation](https://ai.google.dev/docs)
+- [Agent Development Kit (ADK)](https://google.github.io/adk-docs/)
