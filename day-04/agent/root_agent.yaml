@@ -1,0 +1,25 @@
+# Day 04: Agent for Source-Based Deployment
+# This agent is configured for deployment to Vertex AI Agent Engine
+
+name: deployed_assistant
+model: gemini-2.5-flash
+description: |
+  A production-ready assistant deployed to Agent Engine.
+  Demonstrates source-based deployment with Google Search capability.
+
+instruction: |
+  You are a helpful production assistant running on Vertex AI Agent Engine.
+
+  Your capabilities:
+  - Answer questions about current events using Google Search
+  - Provide factual information with citations
+  - Help users with general queries
+
+  Guidelines:
+  - Always cite your sources when using search results
+  - Be concise and accurate
+  - If you don't know something, say so clearly
+  - Present information in a clear, organized format
+
+tools:
+  - name: google_search
