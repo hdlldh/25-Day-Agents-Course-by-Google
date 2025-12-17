@@ -3,643 +3,1140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>企业 AI 助手审批系统</title>
+    <title>AI 审批中心</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #ffffff;
+            --bg-secondary: #f5f5f7;
+            --bg-tertiary: #fbfbfd;
+            --text: #1d1d1f;
+            --text-secondary: #86868b;
+            --text-tertiary: #aeaeb2;
+            --border: #d2d2d7;
+            --border-light: #e8e8ed;
+            --blue: #0071e3;
+            --blue-hover: #0077ed;
+            --green: #34c759;
+            --orange: #ff9500;
+            --red: #ff3b30;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-lg: 0 4px 24px rgba(0,0,0,0.08);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text);
             min-height: 100vh;
-            padding: 20px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            opacity: 0.9;
-        }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            overflow: hidden;
-        }
-
-        .card-header {
-            background: #f8f9fa;
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            font-weight: 600;
-            color: #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        /* 输入区域 */
-        .input-section {
-            grid-column: 1 / -1;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-group input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .btn {
+        /* 导航 */
+        .navbar {
+            background: rgba(255,255,255,0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border-light);
             padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 14px;
-        }
-
-        /* 快捷示例 */
-        .quick-examples {
-            margin-top: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .example-btn {
-            padding: 6px 12px;
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .example-btn:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        /* 任务列表 */
-        .task-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .task-item {
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: all 0.2s;
-        }
-
-        .task-item:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .task-header {
+        .navbar-content {
+            max-width: 1120px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
         }
 
-        .task-id {
-            font-family: monospace;
-            font-size: 12px;
-            color: #666;
-        }
-
-        .task-status {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-waiting_approval {
-            background: #cce5ff;
-            color: #004085;
-        }
-
-        .status-approved, .status-completed {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-rejected, .status-timeout {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .task-content {
-            font-size: 14px;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .task-risk {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-right: 8px;
-        }
-
-        .risk-low {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .risk-medium {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .risk-high {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .risk-critical {
-            background: #721c24;
-            color: white;
-        }
-
-        .task-actions {
+        .logo {
             display: flex;
+            align-items: center;
             gap: 8px;
-            margin-top: 10px;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
         }
 
-        .task-time {
-            font-size: 11px;
-            color: #999;
-        }
-
-        /* 结果展示 */
-        .result-box {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .result-box.show {
-            display: block;
-        }
-
-        .result-box h4 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .result-content {
-            font-size: 14px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        /* 统计信息 */
-        .stats {
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #5e5ce6, #bf5af2);
+            border-radius: 7px;
             display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 10px 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            flex: 1;
-        }
-
-        .stat-number {
-            font-size: 24px;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
             font-weight: 700;
-            color: #667eea;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--green);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--green);
+            border-radius: 50%;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* 统计行 */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            box-shadow: var(--shadow);
         }
 
         .stat-label {
             font-size: 12px;
-            color: #666;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
         }
 
-        /* 加载状态 */
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
         }
 
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #667eea;
+        .stat-value.blue { color: var(--blue); }
+        .stat-value.orange { color: var(--orange); }
+        .stat-value.green { color: var(--green); }
+        .stat-value.red { color: var(--red); }
+
+        /* 主布局 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+        }
+
+        @media (max-width: 960px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 540px) {
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .container { padding: 16px; }
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-body { padding: 20px; }
+
+        /* 输入区 */
+        .input-box {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            padding-right: 80px;
+            background: var(--bg-secondary);
+            border: 1px solid transparent;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            background: var(--bg);
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+
+        .input-field::placeholder { color: var(--text-tertiary); }
+
+        .send-btn {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 8px 16px;
+            background: var(--blue);
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .send-btn:hover { background: var(--blue-hover); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* 快捷按钮 */
+        .quick-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .quick-btn {
+            padding: 6px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .quick-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        /* 流程可视化 */
+        .flow-container {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .flow-container.show { display: block; }
+
+        .flow-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .flow-title {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .flow-id {
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            background: var(--bg-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        /* 流程步骤 */
+        .flow-steps {
+            display: flex;
+            align-items: flex-start;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .flow-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-node {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-light);
+            transition: all 0.3s;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .step-node.active {
+            border-color: var(--blue);
+            background: rgba(0, 113, 227, 0.08);
+        }
+
+        .step-node.completed {
+            border-color: var(--green);
+            background: rgba(52, 199, 89, 0.08);
+        }
+
+        .step-node.rejected {
+            border-color: var(--red);
+            background: rgba(255, 59, 48, 0.08);
+        }
+
+        .step-node.waiting {
+            border-color: var(--orange);
+            background: rgba(255, 149, 0, 0.08);
+            animation: pulse-orange 2s infinite;
+        }
+
+        @keyframes pulse-orange {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 149, 0, 0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(255, 149, 0, 0); }
+        }
+
+        .step-label {
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+        }
+
+        .step-label.active { color: var(--blue); }
+        .step-label.completed { color: var(--green); }
+        .step-label.rejected { color: var(--red); }
+        .step-label.waiting { color: var(--orange); }
+
+        /* 连接线 */
+        .flow-line {
+            position: absolute;
+            top: 24px;
+            left: calc(12.5% + 24px);
+            right: calc(12.5% + 24px);
+            height: 2px;
+            background: var(--border-light);
+            z-index: 0;
+        }
+
+        .flow-line-progress {
+            height: 100%;
+            background: var(--green);
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* 审批操作区 */
+        .approval-box {
+            margin-top: 24px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-light);
+            display: none;
+        }
+
+        .approval-box.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .approval-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .approval-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 149, 0, 0.12);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .approval-info { flex: 1; }
+
+        .approval-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .approval-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .approval-risk {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .risk-high { background: rgba(255, 59, 48, 0.1); color: var(--red); }
+        .risk-critical { background: rgba(255, 59, 48, 0.15); color: var(--red); }
+        .risk-medium { background: rgba(255, 149, 0, 0.1); color: var(--orange); }
+
+        .approval-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            padding: 14px 16px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-light);
+            line-height: 1.6;
+        }
+
+        .approval-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .approval-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .approval-btn.approve {
+            background: var(--green);
+            color: white;
+        }
+
+        .approval-btn.approve:hover { filter: brightness(1.05); }
+
+        .approval-btn.reject {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--red);
+        }
+
+        .approval-btn.reject:hover {
+            background: var(--red);
+            border-color: var(--red);
+            color: white;
+        }
+
+        /* 结果展示 */
+        .result-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            display: none;
+        }
+
+        .result-box.show { display: block; }
+
+        .result-box.success {
+            background: rgba(52, 199, 89, 0.08);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+        }
+
+        .result-box.error {
+            background: rgba(255, 59, 48, 0.08);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        .result-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* 队列列表 */
+        .queue-list {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .queue-item {
+            padding: 14px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .queue-item:hover {
+            border-color: var(--blue);
+            background: var(--bg);
+        }
+
+        .queue-item.selected {
+            border-color: var(--blue);
+            background: rgba(0, 113, 227, 0.05);
+        }
+
+        .queue-item:last-child { margin-bottom: 0; }
+
+        .queue-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .queue-item-id {
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .queue-item-badge {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .badge-waiting {
+            background: rgba(255, 149, 0, 0.12);
+            color: var(--orange);
+        }
+
+        .badge-done {
+            background: rgba(52, 199, 89, 0.12);
+            color: var(--green);
+        }
+
+        .badge-rejected {
+            background: rgba(255, 59, 48, 0.12);
+            color: var(--red);
+        }
+
+        .queue-item-text {
+            font-size: 13px;
+            color: var(--text);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .queue-item-time {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        /* 详情弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            background: var(--bg);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 520px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.15s;
+        }
+
+        .modal-close:hover {
+            background: var(--border-light);
+            color: var(--text);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(80vh - 70px);
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 16px;
+        }
+
+        .detail-label {
+            width: 80px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .detail-value.mono {
+            font-family: 'SF Mono', Menlo, monospace;
+            font-size: 12px;
+        }
+
+        .detail-content {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text);
         }
 
         /* 空状态 */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: #999;
+            color: var(--text-tertiary);
         }
 
-        .empty-state svg {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 15px;
-            opacity: 0.5;
+        .empty-icon {
+            font-size: 36px;
+            margin-bottom: 8px;
+            opacity: 0.6;
         }
+
+        .empty-text { font-size: 13px; }
+
+        /* 加载 */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: var(--text-tertiary);
+            font-size: 13px;
+        }
+
+        .loader {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-light);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* 刷新按钮 */
         .refresh-btn {
             background: none;
             border: none;
+            color: var(--text-tertiary);
             cursor: pointer;
-            color: #667eea;
-            font-size: 14px;
-        }
-
-        .refresh-btn:hover {
-            text-decoration: underline;
-        }
-
-        /* 审批弹窗 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+            display: flex;
             align-items: center;
-            z-index: 1000;
         }
 
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            margin-bottom: 20px;
-        }
-
-        .modal-header h3 {
-            color: #333;
-        }
-
-        .modal-body textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
+        .refresh-btn:hover { color: var(--blue); }
+        .refresh-btn svg { width: 14px; height: 14px; }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <div class="logo-icon">AI</div>
+                <span>审批中心</span>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                <span>在线</span>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <header>
-            <h1>🤖 企业 AI 助手审批系统</h1>
-            <p>Human-in-the-Loop 演示 - Day 16</p>
-        </header>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">总请求</div>
+                <div class="stat-value blue" id="statTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">待审批</div>
+                <div class="stat-value orange" id="statPending">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">已完成</div>
+                <div class="stat-value green" id="statCompleted">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">已拒绝</div>
+                <div class="stat-value red" id="statRejected">0</div>
+            </div>
+        </div>
 
-        <div class="main-grid">
-            <!-- 输入区域 -->
-            <div class="card input-section">
-                <div class="card-header">
-                    📝 提交请求
+        <div class="main-layout">
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">提交请求</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-box">
+                            <input type="text" class="input-field" id="userInput"
+                                   placeholder="输入请求内容...">
+                            <button class="send-btn" id="sendBtn" onclick="submitTask()">发送</button>
+                        </div>
+
+                        <div class="quick-btns">
+                            <button class="quick-btn" onclick="setInput('查询今天北京的天气')">🔍 查天气</button>
+                            <button class="quick-btn" onclick="setInput('查一下上月销售报表')">📊 查报表</button>
+                            <button class="quick-btn" onclick="setInput('修改客户张三的手机号')">✏️ 改数据</button>
+                            <button class="quick-btn" onclick="setInput('删除离职员工的数据')">🗑️ 删数据</button>
+                            <button class="quick-btn" onclick="setInput('给VIP客户群发促销邮件')">📧 群发</button>
+                        </div>
+
+                        <div class="flow-container" id="flowContainer">
+                            <div class="flow-header">
+                                <span class="flow-title">执行流程</span>
+                                <span class="flow-id" id="flowId">#-</span>
+                            </div>
+
+                            <div class="flow-steps">
+                                <div class="flow-line">
+                                    <div class="flow-line-progress" id="flowProgress"></div>
+                                </div>
+
+                                <div class="flow-step">
+                                    <div class="step-node" id="step1">📝</div>
+                                    <div class="step-label" id="step1Label">提交</div>
+                                </div>
+                                <div class="flow-step">
+                                    <div class="step-node" id="step2">🔍</div>
+                                    <div class="step-label" id="step2Label">分析</div>
+                                </div>
+                                <div class="flow-step">
+                                    <div class="step-node" id="step3">👤</div>
+                                    <div class="step-label" id="step3Label">审批</div>
+                                </div>
+                                <div class="flow-step">
+                                    <div class="step-node" id="step4">⚡</div>
+                                    <div class="step-label" id="step4Label">执行</div>
+                                </div>
+                            </div>
+
+                            <div class="approval-box" id="approvalBox">
+                                <div class="approval-header">
+                                    <div class="approval-icon">⚠️</div>
+                                    <div class="approval-info">
+                                        <div class="approval-title">需要审批</div>
+                                        <div class="approval-subtitle">此操作需要管理员确认</div>
+                                    </div>
+                                    <span class="approval-risk" id="approvalRisk">高风险</span>
+                                </div>
+                                <div class="approval-desc" id="approvalDesc">
+                                    操作描述
+                                </div>
+                                <div class="approval-actions">
+                                    <button class="approval-btn reject" onclick="handleApproval(false)">
+                                        拒绝
+                                    </button>
+                                    <button class="approval-btn approve" onclick="handleApproval(true)">
+                                        批准执行
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="result-box" id="resultBox">
+                                <div class="result-text" id="resultText"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="input-group">
-                        <input type="text" id="userInput" placeholder="输入你的请求，例如：查询今天的销售数据" />
-                        <button class="btn btn-primary" onclick="submitTask()">提交</button>
+
+                <div class="card" style="margin-top: 16px;">
+                    <div class="card-header">
+                        <span class="card-title">历史记录</span>
+                        <button class="refresh-btn" onclick="loadHistory()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="quick-examples">
-                        <span style="color: #666; font-size: 13px;">快速示例：</span>
-                        <button class="example-btn" onclick="setExample('查询今天北京的天气')">🔍 查询天气</button>
-                        <button class="example-btn" onclick="setExample('帮我查一下上个月的销售报表')">📊 查询报表</button>
-                        <button class="example-btn" onclick="setExample('把客户张三的手机号改成 13800138000')">✏️ 修改数据</button>
-                        <button class="example-btn" onclick="setExample('删除离职员工小王的所有数据')">🗑️ 删除数据</button>
-                        <button class="example-btn" onclick="setExample('给所有 VIP 客户发送促销邮件')">📧 批量邮件</button>
-                    </div>
-                    <div id="resultBox" class="result-box">
-                        <h4>📋 执行结果</h4>
-                        <div id="resultContent" class="result-content"></div>
+                    <div class="card-body">
+                        <div id="historyList" class="queue-list">
+                            <div class="loading"><div class="loader"></div>加载中...</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 待审批任务 -->
             <div class="card">
                 <div class="card-header">
-                    ⏳ 待审批任务
-                    <button class="refresh-btn" onclick="loadPendingTasks()">🔄 刷新</button>
+                    <span class="card-title">待审批队列</span>
+                    <button class="refresh-btn" onclick="loadPending()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="card-body">
-                    <div id="pendingList" class="task-list">
-                        <div class="loading">
-                            <span class="spinner"></span>加载中...
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 所有任务 -->
-            <div class="card">
-                <div class="card-header">
-                    📋 任务历史
-                    <button class="refresh-btn" onclick="loadAllTasks()">🔄 刷新</button>
-                </div>
-                <div class="card-body">
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="stat-number" id="statTotal">0</div>
-                            <div class="stat-label">总任务</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="statCompleted">0</div>
-                            <div class="stat-label">已完成</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="statRejected">0</div>
-                            <div class="stat-label">已拒绝</div>
-                        </div>
-                    </div>
-                    <div id="allTasksList" class="task-list">
-                        <div class="loading">
-                            <span class="spinner"></span>加载中...
-                        </div>
+                    <div id="pendingList" class="queue-list">
+                        <div class="loading"><div class="loader"></div>加载中...</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 审批弹窗 -->
-    <div id="approvalModal" class="modal">
-        <div class="modal-content">
+    <!-- 详情弹窗 -->
+    <div class="modal-overlay" id="detailModal" onclick="closeDetailModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h3 id="modalTitle">审批任务</h3>
+                <span class="modal-title">任务详情</span>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <p id="modalTaskInfo" style="margin-bottom: 15px; color: #666;"></p>
-                <textarea id="approvalComment" placeholder="请输入审批意见（可选）"></textarea>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="closeModal()" style="background: #6c757d; color: white;">取消</button>
-                <button class="btn btn-danger" onclick="submitApproval(false)">❌ 拒绝</button>
-                <button class="btn btn-success" onclick="submitApproval(true)">✅ 批准</button>
+                <div class="detail-row">
+                    <span class="detail-label">任务 ID</span>
+                    <span class="detail-value mono" id="detailId">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">状态</span>
+                    <span class="detail-value" id="detailStatus">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">创建时间</span>
+                    <span class="detail-value" id="detailTime">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">请求内容</span>
+                    <span class="detail-value" id="detailInput">-</span>
+                </div>
+                <div class="detail-content" id="detailContent" style="display: none;"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = '';
-        let currentTaskId = null;
+        const API = '';
+        let currentTask = null;
 
-        // 页面加载时获取数据
         document.addEventListener('DOMContentLoaded', () => {
-            loadPendingTasks();
-            loadAllTasks();
-
-            // 每 10 秒自动刷新
-            setInterval(() => {
-                loadPendingTasks();
-                loadAllTasks();
-            }, 10000);
+            loadPending();
+            loadHistory();
+            setInterval(() => { loadPending(); loadHistory(); }, 8000);
         });
 
-        // 回车提交
-        document.getElementById('userInput').addEventListener('keypress', (e) => {
+        document.getElementById('userInput').addEventListener('keypress', e => {
             if (e.key === 'Enter') submitTask();
         });
 
-        // 设置示例
-        function setExample(text) {
+        function setInput(text) {
             document.getElementById('userInput').value = text;
             document.getElementById('userInput').focus();
         }
 
-        // 提交任务
-        async function submitTask() {
-            const input = document.getElementById('userInput');
-            const message = input.value.trim();
+        function resetFlow() {
+            ['step1', 'step2', 'step3', 'step4'].forEach(id => {
+                document.getElementById(id).className = 'step-node';
+                document.getElementById(id + 'Label').className = 'step-label';
+            });
+            document.getElementById('flowProgress').style.width = '0%';
+            document.getElementById('approvalBox').classList.remove('show');
+            document.getElementById('resultBox').classList.remove('show', 'success', 'error');
+        }
 
-            if (!message) {
-                alert('请输入请求内容');
-                return;
+        function updateFlow(step, status = 'active') {
+            const progressMap = { 1: '0%', 2: '33%', 3: '66%', 4: '100%' };
+
+            for (let i = 1; i <= 4; i++) {
+                const node = document.getElementById('step' + i);
+                const label = document.getElementById('step' + i + 'Label');
+
+                if (i < step) {
+                    node.className = 'step-node completed';
+                    label.className = 'step-label completed';
+                } else if (i === step) {
+                    node.className = 'step-node ' + status;
+                    label.className = 'step-label ' + status;
+                } else {
+                    node.className = 'step-node';
+                    label.className = 'step-label';
+                }
             }
 
-            const resultBox = document.getElementById('resultBox');
-            const resultContent = document.getElementById('resultContent');
+            const completedStep = status === 'completed' ? step : step - 1;
+            document.getElementById('flowProgress').style.width = progressMap[completedStep] || '0%';
+        }
 
-            resultBox.classList.add('show');
-            resultContent.innerHTML = '<span class="spinner"></span>处理中...';
+        async function submitTask() {
+            const input = document.getElementById('userInput');
+            const btn = document.getElementById('sendBtn');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            btn.disabled = true;
+            btn.textContent = '...';
+
+            const flow = document.getElementById('flowContainer');
+            flow.classList.add('show');
+            resetFlow();
+
+            updateFlow(1, 'active');
+            await delay(300);
+            updateFlow(1, 'completed');
+            updateFlow(2, 'active');
 
             try {
-                const response = await fetch(`${API_BASE}/tasks`, {
+                const res = await fetch(`${API}/tasks`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({ message: msg })
                 });
+                const data = await res.json();
 
-                const data = await response.json();
+                currentTask = data;
+                document.getElementById('flowId').textContent = '#' + data.task_id.substring(0, 8);
 
-                let html = `<strong>任务 ID:</strong> ${data.task_id.substring(0, 8)}...\n`;
-                html += `<strong>状态:</strong> ${formatStatus(data.status)}\n`;
-                html += `<strong>风险等级:</strong> ${formatRisk(data.risk_level)}\n`;
-                html += `<strong>需要审批:</strong> ${data.requires_approval ? '是' : '否'}\n\n`;
-                html += `<strong>响应:</strong>\n${data.message}`;
+                await delay(500);
+                updateFlow(2, 'completed');
 
-                resultContent.innerHTML = html;
+                if (data.requires_approval) {
+                    updateFlow(3, 'waiting');
+
+                    const riskEl = document.getElementById('approvalRisk');
+                    riskEl.textContent = formatRisk(data.risk_level);
+                    riskEl.className = 'approval-risk risk-' + data.risk_level;
+
+                    document.getElementById('approvalDesc').textContent =
+                        data.action_description || msg;
+
+                    document.getElementById('approvalBox').classList.add('show');
+                } else {
+                    updateFlow(3, 'completed');
+                    await delay(300);
+                    updateFlow(4, 'completed');
+                    showResult(data.message, 'success');
+                }
+
                 input.value = '';
+                loadPending();
+                loadHistory();
 
-                // 刷新列表
-                loadPendingTasks();
-                loadAllTasks();
-
-            } catch (error) {
-                resultContent.innerHTML = `<span style="color: red;">错误: ${error.message}</span>`;
+            } catch (err) {
+                showResult('请求失败: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '发送';
             }
         }
 
-        // 加载待审批任务
-        async function loadPendingTasks() {
-            const container = document.getElementById('pendingList');
+        async function handleApproval(approved) {
+            if (!currentTask) return;
+
+            const endpoint = approved ? 'approve' : 'reject';
+            document.getElementById('approvalBox').classList.remove('show');
+
+            if (approved) {
+                updateFlow(3, 'completed');
+                updateFlow(4, 'active');
+            } else {
+                updateFlow(3, 'rejected');
+            }
 
             try {
-                const response = await fetch(`${API_BASE}/tasks/pending`);
-                const data = await response.json();
+                const res = await fetch(`${API}/tasks/${currentTask.task_id}/${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ approved, comment: '', approver: 'web' })
+                });
+                const data = await res.json();
+
+                await delay(500);
+
+                if (approved) {
+                    updateFlow(4, 'completed');
+                    showResult(data.result || '操作已执行', 'success');
+                } else {
+                    showResult('已拒绝: ' + (data.message || '操作被取消'), 'error');
+                }
+
+                loadPending();
+                loadHistory();
+
+            } catch (err) {
+                showResult('操作失败: ' + err.message, 'error');
+            }
+        }
+
+        function selectTask(task) {
+            currentTask = task;
+
+            const flow = document.getElementById('flowContainer');
+            flow.classList.add('show');
+            resetFlow();
+
+            document.getElementById('flowId').textContent = '#' + task.task_id.substring(0, 8);
+
+            updateFlow(1, 'completed');
+            updateFlow(2, 'completed');
+            updateFlow(3, 'waiting');
+
+            const riskEl = document.getElementById('approvalRisk');
+            riskEl.textContent = '待审批';
+            riskEl.className = 'approval-risk risk-high';
+
+            document.getElementById('approvalDesc').textContent =
+                task.user_input || '等待审批的操作';
+
+            document.getElementById('approvalBox').classList.add('show');
+            document.getElementById('resultBox').classList.remove('show');
+
+            flow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showResult(text, type) {
+            const box = document.getElementById('resultBox');
+            box.className = 'result-box show ' + type;
+            document.getElementById('resultText').textContent = text;
+        }
+
+        async function loadPending() {
+            const container = document.getElementById('pendingList');
+            try {
+                const res = await fetch(`${API}/tasks/pending`);
+                const data = await res.json();
+
+                document.getElementById('statPending').textContent = data.total;
 
                 if (data.tasks.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <p>暂无待审批任务</p>
+                            <div class="empty-icon">✓</div>
+                            <div class="empty-text">暂无待审批任务</div>
                         </div>
                     `;
                     return;
                 }
 
-                container.innerHTML = data.tasks.map(task => `
-                    <div class="task-item">
-                        <div class="task-header">
-                            <span class="task-id">${task.task_id.substring(0, 8)}...</span>
-                            <span class="task-status status-${task.status}">${formatStatus(task.status)}</span>
+                container.innerHTML = data.tasks.map(t => `
+                    <div class="queue-item" onclick='selectTask(${JSON.stringify(t).replace(/'/g, "\\'")})'>
+                        <div class="queue-item-header">
+                            <span class="queue-item-id">#${t.task_id.substring(0, 8)}</span>
+                            <span class="queue-item-badge badge-waiting">待审批</span>
                         </div>
-                        <div class="task-content">${escapeHtml(task.user_input || '无')}</div>
-                        <div>
-                            <span class="task-risk risk-high">待审批操作</span>
-                            <span class="task-time">${formatTime(task.created_at)}</span>
-                        </div>
-                        <div class="task-actions">
-                            <button class="btn btn-success btn-sm" onclick="openApprovalModal('${task.task_id}', '${escapeHtml(task.pending_action || task.user_input)}')">✅ 批准</button>
-                            <button class="btn btn-danger btn-sm" onclick="openApprovalModal('${task.task_id}', '${escapeHtml(task.pending_action || task.user_input)}')">❌ 拒绝</button>
-                        </div>
+                        <div class="queue-item-text">${escapeHtml(t.user_input || '-')}</div>
+                        <div class="queue-item-time">${formatTime(t.created_at)}</div>
                     </div>
                 `).join('');
 
-            } catch (error) {
-                container.innerHTML = `<div class="empty-state"><p style="color: red;">加载失败: ${error.message}</p></div>`;
+            } catch (err) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-text" style="color:var(--red)">加载失败</div></div>`;
             }
         }
 
-        // 加载所有任务
-        async function loadAllTasks() {
-            const container = document.getElementById('allTasksList');
-
+        async function loadHistory() {
+            const container = document.getElementById('historyList');
             try {
-                const response = await fetch(`${API_BASE}/tasks?limit=20`);
-                const data = await response.json();
+                const res = await fetch(`${API}/tasks?limit=15`);
+                const data = await res.json();
 
-                // 更新统计
-                const completed = data.tasks.filter(t => t.status === 'completed').length;
+                const completed = data.tasks.filter(t => ['completed', 'approved'].includes(t.status)).length;
                 const rejected = data.tasks.filter(t => ['rejected', 'timeout'].includes(t.status)).length;
 
                 document.getElementById('statTotal').textContent = data.total;
@@ -647,114 +1144,97 @@
                 document.getElementById('statRejected').textContent = rejected;
 
                 if (data.tasks.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <p>暂无任务记录</p>
-                        </div>
-                    `;
+                    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">暂无记录</div></div>`;
                     return;
                 }
 
-                container.innerHTML = data.tasks.map(task => `
-                    <div class="task-item">
-                        <div class="task-header">
-                            <span class="task-id">${task.task_id.substring(0, 8)}...</span>
-                            <span class="task-status status-${task.status}">${formatStatus(task.status)}</span>
+                container.innerHTML = data.tasks.map(t => `
+                    <div class="queue-item" onclick='showTaskDetail(${JSON.stringify(t).replace(/'/g, "\\'")})'>
+                        <div class="queue-item-header">
+                            <span class="queue-item-id">#${t.task_id.substring(0, 8)}</span>
+                            <span class="queue-item-badge ${getBadgeClass(t.status)}">${formatStatus(t.status)}</span>
                         </div>
-                        <div class="task-content">${escapeHtml(task.user_input || '无')}</div>
-                        <div class="task-time">${formatTime(task.created_at)}</div>
+                        <div class="queue-item-text">${escapeHtml(t.user_input || '-')}</div>
+                        <div class="queue-item-time">${formatTime(t.created_at)}</div>
                     </div>
                 `).join('');
 
-            } catch (error) {
-                container.innerHTML = `<div class="empty-state"><p style="color: red;">加载失败: ${error.message}</p></div>`;
+            } catch (err) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-text" style="color:var(--red)">加载失败</div></div>`;
             }
         }
 
-        // 打开审批弹窗
-        function openApprovalModal(taskId, taskInfo) {
-            currentTaskId = taskId;
-            document.getElementById('modalTaskInfo').textContent = `操作: ${taskInfo}`;
-            document.getElementById('approvalComment').value = '';
-            document.getElementById('approvalModal').classList.add('show');
-        }
+        // 显示任务详情弹窗
+        async function showTaskDetail(task) {
+            document.getElementById('detailId').textContent = task.task_id;
+            document.getElementById('detailStatus').innerHTML = `<span class="queue-item-badge ${getBadgeClass(task.status)}">${formatStatus(task.status)}</span>`;
+            document.getElementById('detailTime').textContent = task.created_at ? new Date(task.created_at).toLocaleString('zh-CN') : '-';
+            document.getElementById('detailInput').textContent = task.user_input || '-';
 
-        // 关闭弹窗
-        function closeModal() {
-            document.getElementById('approvalModal').classList.remove('show');
-            currentTaskId = null;
-        }
-
-        // 提交审批
-        async function submitApproval(approved) {
-            if (!currentTaskId) return;
-
-            const comment = document.getElementById('approvalComment').value;
-            const endpoint = approved ? 'approve' : 'reject';
-
+            // 尝试获取更多详情
+            const detailContent = document.getElementById('detailContent');
             try {
-                const response = await fetch(`${API_BASE}/tasks/${currentTaskId}/${endpoint}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        approved,
-                        comment,
-                        approver: 'web_user'
-                    })
-                });
+                const res = await fetch(`${API}/tasks/${task.task_id}`);
+                const data = await res.json();
 
-                const data = await response.json();
-
-                closeModal();
-                loadPendingTasks();
-                loadAllTasks();
-
-                // 显示结果
-                const resultBox = document.getElementById('resultBox');
-                const resultContent = document.getElementById('resultContent');
-                resultBox.classList.add('show');
-                resultContent.innerHTML = `<strong>审批结果:</strong> ${approved ? '已批准' : '已拒绝'}\n\n${data.result || data.message}`;
-
-            } catch (error) {
-                alert('审批失败: ' + error.message);
+                if (data.state && data.state.final_answer) {
+                    detailContent.textContent = data.state.final_answer;
+                    detailContent.style.display = 'block';
+                } else if (data.state && data.state.action_plan) {
+                    detailContent.textContent = data.state.action_plan.description || JSON.stringify(data.state.action_plan);
+                    detailContent.style.display = 'block';
+                } else {
+                    detailContent.style.display = 'none';
+                }
+            } catch (e) {
+                detailContent.style.display = 'none';
             }
+
+            document.getElementById('detailModal').classList.add('show');
         }
 
-        // 工具函数
-        function formatStatus(status) {
-            const map = {
-                'pending': '处理中',
-                'waiting_approval': '待审批',
-                'approved': '已批准',
-                'rejected': '已拒绝',
-                'completed': '已完成',
-                'timeout': '已超时',
-                'failed': '失败'
-            };
-            return map[status] || status;
+        function closeDetailModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('detailModal').classList.remove('show');
         }
 
-        function formatRisk(risk) {
-            const map = {
-                'low': '🟢 低风险',
-                'medium': '🟡 中风险',
-                'high': '🔴 高风险',
-                'critical': '⛔ 关键级'
-            };
-            return map[risk] || risk || '未知';
+        // ESC 键关闭弹窗
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeDetailModal();
+        });
+
+        function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        function formatStatus(s) {
+            return { pending: '处理中', waiting_approval: '待审批', approved: '已批准',
+                     rejected: '已拒绝', completed: '已完成', timeout: '已超时', failed: '失败' }[s] || s;
         }
 
-        function formatTime(isoTime) {
-            if (!isoTime) return '';
-            const date = new Date(isoTime);
-            return date.toLocaleString('zh-CN');
+        function getBadgeClass(s) {
+            if (['completed', 'approved'].includes(s)) return 'badge-done';
+            if (['rejected', 'timeout', 'failed'].includes(s)) return 'badge-rejected';
+            return 'badge-waiting';
         }
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function formatRisk(r) {
+            return { low: '低风险', medium: '中风险', high: '高风险', critical: '极高风险' }[r] || r;
+        }
+
+        function formatTime(t) {
+            if (!t) return '';
+            const d = new Date(t);
+            const diff = (Date.now() - d) / 1000;
+            if (diff < 60) return '刚刚';
+            if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
+            if (diff < 86400) return Math.floor(diff / 3600) + '小时前';
+            return d.toLocaleDateString('zh-CN');
+        }
+
+        function escapeHtml(t) {
+            if (!t) return '';
+            const d = document.createElement('div');
+            d.textContent = t;
+            return d.innerHTML;
         }
     </script>
 </body>
