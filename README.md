@@ -82,7 +82,10 @@ cp .env.example .env
 | 19 | Register to Gemini Enterprise | ✅ Done |
 | 20 | A2A Extensions: Secure Passport | ✅ Done |
 | 21 | Kaggle Capstone 获奖项目分析 | ✅ Done |
-| 22-25 | Enterprise Topics | ⏳ Pending |
+| 22 | Security & Guardrails | ✅ Done |
+| 23 | Durable Agents (Restate + ADK) | ✅ Done |
+| 24 | A2A-ify Anything | ✅ Done |
+| 25 | 🎉 Grand Finale | ✅ Done |
 
 ## Running Daily Exercises
 

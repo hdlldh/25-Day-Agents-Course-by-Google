@@ -1,0 +1,99 @@
+[project]
+name = "retail-ai-location-strategy"
+version = "1.0.0"
+description = "Multi-agent AI pipeline for retail site selection using Google ADK"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Lavi Nigam", email = "lavinigam@google.com"},
+    {name = "Deepak Moonat", email = "dmoonat@google.com"},
+]
+keywords = ["adk", "agents", "gemini", "retail", "location-strategy"]
+
+dependencies = [
+    "google-adk>=1.20.0",
+    "googlemaps>=4.10.0",
+    "pydantic>=2.10.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Repository = "https://github.com/google/adk-samples"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "nest-asyncio>=1.6.0",
+    "agent-starter-pack>=0.14.1",
+]
+
+[project.optional-dependencies]
+lint = [
+    "ruff>=0.4.6",
+    "mypy>=1.18.2",
+    "codespell>=2.4.1",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "RUF", # ruff specific rules
+]
+ignore = ["E501", "C901"] # ignore line too long, too complex
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.mypy]
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+check_untyped_defs = true
+disallow_subclassing_any = true
+warn_incomplete_stub = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+follow_imports = "silent"
+ignore_missing_imports = true
+explicit_package_bases = true
+disable_error_code = ["misc", "no-untyped-call", "no-any-return"]
+exclude = [".venv", "app/frontend"]
+
+[tool.codespell]
+skip = ".venv,./app/frontend,**/*.ipynb,uv.lock"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+# This configuration file is used by goo.gle/agent-starter-pack to power remote templating.
+# It defines the template's properties, settings, and deployment options.
+[tool.agent-starter-pack]
+base_template = "adk_base"
+description = "A multi-agent AI pipeline for retail site selection that uses Gemini to research markets, map competitors, analyze gaps, and generate strategic recommendations with visual reports"
+example_question = "I want to open a coffee shop in Indiranagar, Bangalore"
+
+[tool.agent-starter-pack.settings]
+deployment_targets = ["agent_engine", "cloud_run"]
+interactive_command = "dev"
